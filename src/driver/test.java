@@ -13,15 +13,7 @@ public class test {
         CorpusReader reader = new CorpusReader("/home/turtle/Downloads/mini_newsgroups");
         reader.populateSearchEngine(t);
 
-        t.insert("abcd", "doc1");
-        t.insert("bcd", "doc1");
-        t.insert("cdasdf", "doc1");
-        t.insert("ghraebcd", "doc1");
-        t.insert("htabcd", "doc1");
-
-
-
-
+        
         t.trie.printDictionary();
 
     }
