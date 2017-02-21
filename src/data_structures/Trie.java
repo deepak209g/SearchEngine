@@ -9,18 +9,28 @@ import java.util.Map;
 public class Trie {
     Node<Character> original;
     Node<Character> reverse;
-
+    Map<String, Integer> docs; // how many words each document has
 
     public Trie() {
         this.original = new Node<>(false);
         this.reverse = new Node<>(false);
-        //this.docs = new HashMap<>();
+        this.docs = new HashMap<>();
     }
 
     public void insert(String str, String docId){
+        if(str.length() == 0){
+            return;
+        }
         Node<Character> tempF = original;
         Node<Character> tempR = reverse;
         str = str.toLowerCase();
+
+        if(docs.containsKey(docId)){
+            int totalwords = docs.get(docId) + 1;
+            docs.put(docId, totalwords);
+        }else{
+            docs.put(docId, 1);
+        }
 
 //        Insert the word
         //traverse to the final node

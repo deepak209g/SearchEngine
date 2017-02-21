@@ -31,7 +31,7 @@ public class Node<E extends Comparable<E>>{
     public void insertInnerNode(E key){
         Pair<E, Node> temp = new Pair<E, Node>(key, new Node(false));
         int pos = Collections.binarySearch(this.nodes, temp);
-        System.out.println("inserting " + key + " at position : " + pos);
+        //System.out.println("inserting " + key + " at position : " + pos);
         this.nodes.add(-pos-1, temp);
     }
 
