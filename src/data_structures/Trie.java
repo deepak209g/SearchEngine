@@ -9,25 +9,18 @@ import java.util.Map;
 public class Trie {
     Node<Character> original;
     Node<Character> reverse;
-    Map<String, Integer> docs;
+
 
     public Trie() {
         this.original = new Node<>(false);
         this.reverse = new Node<>(false);
-        this.docs = new HashMap<>();
+        //this.docs = new HashMap<>();
     }
 
     public void insert(String str, String docId){
         Node<Character> tempF = original;
         Node<Character> tempR = reverse;
         str = str.toLowerCase();
-
-        if(docs.containsKey(docId)){
-            int totalwords = docs.get(docId) + 1;
-            docs.put(docId, totalwords);
-        }else{
-            docs.put(docId, 1);
-        }
 
 //        Insert the word
         //traverse to the final node
@@ -106,6 +99,33 @@ public class Trie {
                 System.out.println(st+c);
             }
             printDictionary(temp, st+c);
+        }
+    }
+
+    private Map<String, Integer> searchForward(String str){
+        Node<Character> tempF = original;
+        str = str.toLowerCase();
+        for(int i=0; i<str.length(); i++){
+            char cF = str.charAt(i);
+            if(tempF.search(cF) >= 0){
+                // key present
+                tempF = tempF.nodes.get(tempF.search(cF)).second;
+            }else{
+                // word is not present
+                return null;
+            }
+        }
+
+        if(tempF.docs != null){
+            return tempF.docs;
+        }
+        return null;
+    }
+
+    public void searchPrint(String key){
+        Map<String, Integer> mp = searchForward(key);
+        for(String s: mp.keySet()){
+            System.out.println(s);
         }
     }
 }
