@@ -12,6 +12,10 @@ public class test {
         t.insert("abcd", "doc4");
         t.insert("abcd", "doc3");
         t.insert("abcd", "doc2");
+		        t.insert("abcd", "doc1");
+        t.insert("abcd", "doc4");
+        t.insert("abcd", "doc3");
+        t.insert("abcd", "doc2");
 
 
         t.insert("abcde", "doc1");
