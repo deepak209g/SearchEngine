@@ -10,12 +10,13 @@ public class test {
     public static void main(String args[]){
         SearchEngine t = new SearchEngine();
 
-        CorpusReader reader = new CorpusReader("D:/mini_newsgroups");
+        CorpusReader reader = new CorpusReader("/home/turtle/Downloads/mini_newsgroups");
         reader.populateSearchEngine(t);
-
         t.trie.printDictionary();
         String query="apol*";
         t.searchPostWild(query,query.length());
+        //t.trie.printDictionary();
+        t.executeQuery("apollo");
 
     }
 }

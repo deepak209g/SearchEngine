@@ -43,7 +43,6 @@ public class CorpusReader {
                         token = token.toLowerCase();
                         se.insert(token, file);
                     }
-
                 }
 
             } catch (IOException e) {

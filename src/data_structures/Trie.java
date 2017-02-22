@@ -103,9 +103,10 @@ public class Trie {
         }
 
     }
-     public void tfIdfUtility(Map<String, Integer> map, String str,ArrayList<DocFreqPair> wildTerms)
+    public ArrayList<DocFreqPair> tfIdfUtility(Map<String, Integer> map, String str)
     {
-//        ArrayList<DocFreqPair>  toret = new ArrayList<DocFreqPair>();
+        System.out.println("Entry");
+        ArrayList<DocFreqPair>  toret = new ArrayList<>();
         double idf = Math.log(docs.size()/map.size());
         for(String key : map.keySet())
         {
@@ -156,16 +157,17 @@ public class Trie {
         return search(this.original,str,i);
     }
     public ArrayList<DocFreqPair> search(Node<Character> root, String str,int i){
+
+        System.out.println(i);
         if(i==str.length()-1){
             Map<String, Integer> map = root.docs;
+//            if(map==null)
+                System.out.println(map);
+            System.out.println(map.size());
             if(map.size()==0)
                 return null;
             else
-            {
-                ArrayList<DocFreqPair> simpleTerms=new ArrayList<>();
-                tfIdfUtility(map,str,simpleTerms);
-                return simpleTerms;
-            }
+                return tfIdfUtility(map,str);
         }
         else{
             char c=str.charAt(i);
@@ -178,7 +180,6 @@ public class Trie {
             }
         }
     }
-
 
     public void printDictionary(){
         printDictionary(this.original, "");
