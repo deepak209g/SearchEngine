@@ -1,27 +1,21 @@
 package driver;
 
 import data_structures.Trie;
+import engine.SearchEngine;
 
 /**
  * Created by turtle on 17/2/17.
  */
 public class test {
     public static void main(String args[]){
-        Trie t = new Trie();
-        t.insert("abcd", "doc1");
-        t.insert("abcd", "doc4");
-        t.insert("abcd", "doc3");
-        t.insert("abcd", "doc2");
-		        t.insert("abcd", "doc1");
-        t.insert("abcd", "doc4");
-        t.insert("abcd", "doc3");
-        t.insert("abcd", "doc2");
+        SearchEngine t = new SearchEngine();
 
+        CorpusReader reader = new CorpusReader("D:/mini_newsgroups");
+        reader.populateSearchEngine(t);
 
-        t.insert("abcde", "doc1");
-        t.insert("abcdasfd", "doc1");
-        t.insert("abcdx", "doc1");
-        t.printDictionary();
-        t.searchPrint("abcd");
+        t.trie.printDictionary();
+        String query="apol*";
+        t.searchPostWild(query,query.length());
+
     }
 }

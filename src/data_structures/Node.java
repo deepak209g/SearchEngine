@@ -14,7 +14,7 @@ public class Node<E extends Comparable<E>>{
     public Node(boolean isLeaf) {
         if(isLeaf){
             this.nodes = new ArrayList<Pair<E, Node>>();
-            this.docs = new HashMap<>();
+            this.docs = null;
         }else{
             this.nodes = new ArrayList<Pair<E, Node>>();
             this.docs = null;
@@ -31,7 +31,7 @@ public class Node<E extends Comparable<E>>{
     public void insertInnerNode(E key){
         Pair<E, Node> temp = new Pair<E, Node>(key, new Node(false));
         int pos = Collections.binarySearch(this.nodes, temp);
-        System.out.println("inserting " + key + " at position : " + pos);
+        //System.out.println("inserting " + key + " at position : " + pos);
         this.nodes.add(-pos-1, temp);
     }
 
@@ -39,6 +39,7 @@ public class Node<E extends Comparable<E>>{
         Pair<E, Node> temp = new Pair<E, Node>(key, new Node(true));
         int pos = Collections.binarySearch(this.nodes, temp);
         this.nodes.add(-pos-1, temp);
+        this.docs = new HashMap<>();
     }
 
 }
