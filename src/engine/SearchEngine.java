@@ -18,7 +18,14 @@ public class SearchEngine {
     public void insert(String term, String docId){
         trie.insert(term, docId);
     }
-
+    public void searchPostWild(String query,int len)
+    {
+        query=query.substring(0,len-1);
+        System.out.println(query);
+        ArrayList<DocFreqPair> wildTerms = trie.searchWild(query,0);
+        System.out.println(wildTerms);
+        System.out.println(wildTerms.size());
+    }
     public void executeQuery(String query) {
         PriorityQueue<Pair<Double, String>> queue = new PriorityQueue<>(1000, Collections.reverseOrder());
         StringTokenizer tokens = new StringTokenizer(query);

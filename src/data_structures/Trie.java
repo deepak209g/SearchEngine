@@ -111,14 +111,53 @@ public class Trie {
         for(String key : map.keySet())
         {
             double tf = 1+Math.log(map.get(key));
-            toret.add(new DocFreqPair(key,str,tf,idf));
+            wildTerms.add(new DocFreqPair(key,str,tf,idf));
         }
-        return toret;
+//        return toret;
+    }
+    public void findWildTerms(Node<Character> root, String term, ArrayList<DocFreqPair> wildTerms)
+    {
+        for(int i=0; i<root.nodes.size(); i++) {
+            if (root.docs != null){
+                tfIdfUtility(root.docs,term,wildTerms);
+            }
+            char ch = root.nodes.get(i).first;
+            Node temp = root.nodes.get(i).second;
+            findWildTerms(temp,term+ch,wildTerms);
+        }
+    }
+    public ArrayList<DocFreqPair> searchWild(String str,int i)
+    {
+        return searchWild(this.original,str,i);
+    }
+    public ArrayList<DocFreqPair> searchWild(Node<Character> root, String str,int i)
+    {
+        System.out.println(i);
+        if(i==str.length()-1){
+//           Map<String, Integer> map = root.docs; //when * is ""
+            char c=str.charAt(i);
+            int pos=root.search(c);
+            Node<Character> temp = root.nodes.get(pos).second;
+            ArrayList<DocFreqPair> wildTerms = new ArrayList<>();
+            findWildTerms(temp,"",wildTerms);
+            return wildTerms;
+        }
+        else{
+            char c=str.charAt(i);
+            int pos=root.search(c);
+            if(pos<0)
+                return null;
+            else{
+                Node<Character> temp = root.nodes.get(pos).second;
+                return searchWild(temp, str, i + 1);
+            }
+        }
     }
     public ArrayList<DocFreqPair> search(String str,int i){
         return search(this.original,str,i);
     }
     public ArrayList<DocFreqPair> search(Node<Character> root, String str,int i){
+
         System.out.println(i);
         if(i==str.length()-1){
             Map<String, Integer> map = root.docs;

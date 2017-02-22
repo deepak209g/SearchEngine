@@ -12,8 +12,10 @@ public class test {
 
         CorpusReader reader = new CorpusReader("/home/turtle/Downloads/mini_newsgroups");
         reader.populateSearchEngine(t);
-
         t.trie.printDictionary();
+        String query="apol*";
+        t.searchPostWild(query,query.length());
+        //t.trie.printDictionary();
         t.executeQuery("apollo");
 
     }
