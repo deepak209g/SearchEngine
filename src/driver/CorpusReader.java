@@ -37,11 +37,10 @@ public class CorpusReader {
                     // got a line from file
                     // add it to the engine
                     //tok = new StringTokenizer(sCurrentLine);
-                    String[] split = sCurrentLine.split("\\s|\\.");
+                    sCurrentLine = sCurrentLine.replaceAll("[^a-zA-Z]"," ");
+                    String[] split = sCurrentLine.split("\\s");
                     for(String token: split){
                         token = token.toLowerCase();
-                        token = token.replaceAll("[^a-zA-Z]","");
-                        //System.out.println(token);
                         se.insert(token, file);
                     }
 

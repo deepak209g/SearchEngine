@@ -13,8 +13,8 @@ public class test {
         CorpusReader reader = new CorpusReader("/home/turtle/Downloads/mini_newsgroups");
         reader.populateSearchEngine(t);
 
-        
         t.trie.printDictionary();
+        t.executeQuery("apollo");
 
     }
 }
