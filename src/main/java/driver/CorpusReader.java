@@ -1,19 +1,20 @@
 package driver;
 
-import com.uttesh.exude.ExudeData;
-import com.uttesh.exude.exception.InvalidDataException;
 import engine.SearchEngine;
+import engine.Stemmer;
+import org.tartarus.snowball.ext.PorterStemmer;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.StringTokenizer;
 
 /**
  * Created by turtle on 21/2/17.
  */
 public class CorpusReader {
     String directory;
+    Stemmer stemmer;
+
+
+
 
     public CorpusReader(String directory) {
         this.directory = directory;
@@ -26,6 +27,7 @@ public class CorpusReader {
 
     // Add the vocabulary to the search engine
     private void populateSearchEngine(SearchEngine se, String file){
+        stemmer = new Stemmer();
         File temp = new File(file);
         if(temp.isFile()){
             // read contents
@@ -45,8 +47,10 @@ public class CorpusReader {
                     String[] split = sCurrentLine.split("\\s+");
                     for(String token: split){
                         token = token.toLowerCase().trim();
-
-
+                        char arr[] = token.toCharArray();
+                        stemmer.add(arr, arr.length);
+                        stemmer.stem();
+                        token = stemmer.toString();
                         if(token.length()==0)
                             continue;
                         se.insert(token, file);

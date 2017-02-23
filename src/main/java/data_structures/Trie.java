@@ -127,6 +127,8 @@ public class Trie {
         for(String key : map.keySet())
         {
             double tf = 1+Math.log(map.get(key));
+//            System.out.println(tf);
+//            System.out.println(idf);
             wildTerms.add(new DocFreqPair(key,str,tf,idf));
         }
 //        return toret;
@@ -151,7 +153,7 @@ public class Trie {
         for(int j=0;j<str.length();j++)
             reverseString=str.charAt(j)+reverseString;
 
-        return searchWild(this.reverse,reverseString,i."");
+        return searchWild(this.reverse,reverseString,i,"");
     }
 
     // To confirm

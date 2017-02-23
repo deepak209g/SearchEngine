@@ -21,7 +21,9 @@ public class test {
 //        System.out.println(output);
 //        System.out.println(inputData.length());
 //        System.out.println(output.length());
-        String query="apoll";
-        t.spellChecker(query);
+
+        t.executeQuery("apollo");
+        //String query="apoll";
+        //t.spellChecker(query);
     }
 }
