@@ -3,6 +3,7 @@ package engine;
 import data_structures.Pair;
 import data_structures.Trie;
 
+import javax.print.Doc;
 import java.util.*;
 
 /**
@@ -25,11 +26,25 @@ public class SearchEngine {
 
     // To confirm
     public void searchWildTerm(String query,int len) {
-        query=query.substring(0,len-1);
-        System.out.println(query);
-        ArrayList<DocFreqPair> wildTerms = trie.searchPostWild(query,0);
-        System.out.println(wildTerms);
-        System.out.println(wildTerms.size());
+        ArrayList<DocFreqPair> wildTerms=new ArrayList<DocFreqPair>();
+        PriorityQueue<Pair<Double, String>> queue = new PriorityQueue(1000, Collections.reverseOrder());
+        if(query.charAt(0)=='*') {
+            query = query.substring(1);
+            wildTerms = trie.searchPreWild(query,0);
+        } else if(query.charAt(len-1)=='*'){
+            query = query.substring(0,len-1);
+            wildTerms = trie.searchPostWild(query,0);
+        }else{
+            wildTerms = trie.searchInwild(query);
+        }
+        for(DocFreqPair itr : wildTerms){
+            double score = itr.idf * itr.tf;
+            queue.add(new Pair(score, itr.term+" "+itr.docid));
+        }
+        while (queue.size() > 0) {
+            Pair<Double,String> p=queue.poll();
+            System.out.println("TF IDF Score :" + p.first+", Doc ID: " + p.second);
+        }
     }
 
 
@@ -66,13 +81,20 @@ public class SearchEngine {
 
     public void calculateJaccardCoffecient(Map<String, Double> jaccard,String query){
         ArrayList<Double> coefficients = new ArrayList<Double>();
+        PriorityQueue<Pair<Double, String>> queue = new PriorityQueue(1000,Collections.reverseOrder());
         for(String key:jaccard.keySet()){
             double num = jaccard.get(key);
             double deno =  query.length() + key.length() + 2 - num;
             double ans = num/deno;
             if(ans > 0.3){
-                System.out.println(ans+" key: "+key + " num: " + num + " den: " + deno);
+                queue.add(new Pair(ans,key));
+//                System.out.println(ans+" key: "+key + " num: " + num + " den: " + deno);
             }
+
+        }
+        while (queue.size() > 0) {
+            Pair<Double,String> p=queue.poll();
+            System.out.println("Jaccard Coefficient :" + p.first+", Did you mean this?: " + p.second);
         }
     }
 
@@ -81,34 +103,39 @@ public class SearchEngine {
     // End game. Executes the final query of the user
     public void executeQuery(String query) {
         PriorityQueue<Pair<Double, String>> queue = new PriorityQueue(1000, Collections.reverseOrder());
+//        System.out.println(query);
         StringTokenizer tokens = new StringTokenizer(query);
         Map<String, Double> results = new HashMap();
         while (tokens.hasMoreTokens()) {
             String term = tokens.nextToken().toLowerCase().trim();
-            System.out.println(term);
             ArrayList<DocFreqPair> res = trie.search(term, 0);
-            if (res == null)
-                System.out.println("Object Not found");
+            if (res == null) {
+                System.out.println("token " + term + " Not found");
+                continue;
+            }
             else {
                 for (DocFreqPair itr : res) {
                     double score = itr.tf * itr.idf;
                     if (!results.containsKey(itr.docid)) {
                         {
                             results.put(itr.docid, score);
-                            queue.add(new Pair(new Double(score), itr.docid));
+//                            queue.add(new Pair(new Double(score), itr.docid));
                         }
                     } else {
-                        queue.remove(new Pair(new Double(score), itr.docid));
+//                        queue.remove(new Pair(new Double(score), itr.docid));
                         score += results.get(itr.docid);
                         results.put(itr.docid, score);
-                        queue.add(new Pair(new Double(score), itr.docid));
+//                        queue.add(new Pair(new Double(score), itr.docid));
                     }
                 }
             }
-            while (queue.size() > 0) {
-                Pair<Double,String> p=queue.poll();
-                System.out.println(p.first+" "+p.second);
-            }
+        }
+        for(String key : results.keySet()){
+            queue.add(new Pair(results.get(key),key));
+        }
+        while (queue.size() > 0) {
+            Pair<Double,String> p=queue.poll();
+            System.out.println("TF IDF Score :" + p.first+", Doc ID: " + p.second);
         }
     }
 

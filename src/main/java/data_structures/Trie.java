@@ -2,6 +2,7 @@ package data_structures;
 
 import engine.DocFreqPair;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,10 +124,11 @@ public class Trie {
     // To confirm
      public void tfIdfUtility(Map<String, Integer> map, String str,ArrayList<DocFreqPair> wildTerms) {
 //        ArrayList<DocFreqPair>  toret = new ArrayList<DocFreqPair>();
-        double idf = Math.log(docs.size()/map.size());
+        double idf = Math.log(docs.size()/map.size())/Math.log(10.0);
         for(String key : map.keySet())
         {
-            double tf = 1+Math.log(map.get(key));
+            double tf = 1+(Math.log(map.get(key))/Math.log(10.0));
+//            System.out.println(map.get(key));
 //            System.out.println(tf);
 //            System.out.println(idf);
             wildTerms.add(new DocFreqPair(key,str,tf,idf));
@@ -135,35 +137,60 @@ public class Trie {
     }
 
     // To confirm
-    public void findWildTerms(Node<Character> root, String term, ArrayList<DocFreqPair> wildTerms) {
+    public void findWildTerms(Node<Character> root, String term, ArrayList<DocFreqPair> wildTerms,int flag) {
         if (root.docs != null){
             tfIdfUtility(root.docs,term,wildTerms);
         }
         for(int i=0; i<root.nodes.size(); i++) {
             char ch = root.nodes.get(i).first;
             Node temp = root.nodes.get(i).second;
-            findWildTerms(temp,term+ch,wildTerms);
+            if(flag==0)
+                findWildTerms(temp,ch+term,wildTerms,flag);
+            else
+                findWildTerms(temp,term+ch,wildTerms,flag);
         }
     }
 
+    public ArrayList<DocFreqPair> Intersection(ArrayList<DocFreqPair> postWildTerms,ArrayList<DocFreqPair> preWildTerms){
+        ArrayList<DocFreqPair> wildTerms = new ArrayList<DocFreqPair>();
+        for(DocFreqPair itr:postWildTerms)
+        {
+            if(preWildTerms.contains(itr))
+                wildTerms.add(itr);
+        }
+        return wildTerms;
+    }
     // To confirm
+    public ArrayList<DocFreqPair> searchInwild(String str) {
+        int len = str.length();
+        int pos = str.indexOf('*');
+        String postTerm = str.substring(0,pos);
+        String preTerm = str.substring(pos+1,len);
+        ArrayList<DocFreqPair> postWildTerms = searchPostWild(postTerm,0);
+        ArrayList<DocFreqPair> preWildTerms = searchPreWild(preTerm,0);
+//        System.out.println(preWildTerms);
+//        System.out.println(postWildTerms);
+//        postWildTerms.retainAll(preWildTerms);
+//        System.out.println(postWildTerms);
+        return Intersection(postWildTerms,preWildTerms);
+    }
     public ArrayList<DocFreqPair> searchPreWild(String str,int i) {
         String reverseString = "";
 
         for(int j=0;j<str.length();j++)
             reverseString=str.charAt(j)+reverseString;
 
-        return searchWild(this.reverse,reverseString,i,"");
+        return searchWild(this.reverse,reverseString,i,"",0);
     }
 
     // To confirm
     public ArrayList<DocFreqPair> searchPostWild(String str,int i)
     {
-        return searchWild(this.original,str,i,"");
+        return searchWild(this.original,str,i,"",1);
     }
 
     // To confirm
-    public ArrayList<DocFreqPair> searchWild(Node<Character> root, String str,int i,String term) {
+    public ArrayList<DocFreqPair> searchWild(Node<Character> root, String str,int i,String term,int flag) {
 //        System.out.println(i);
         Node<Character> temp;
         if(i==str.length()-1){
@@ -175,7 +202,11 @@ public class Trie {
             else {
                 temp = root.nodes.get(pos).second;
                 ArrayList<DocFreqPair> wildTerms = new ArrayList();
-                findWildTerms(temp,term+c, wildTerms);
+                if(flag==0)
+                    findWildTerms(temp,c+term, wildTerms,flag);
+                else
+                    findWildTerms(temp,term+c, wildTerms,flag);
+
                 return wildTerms;
             }
         }
@@ -186,7 +217,10 @@ public class Trie {
                 return null;
             else{
                 temp = root.nodes.get(pos).second;
-                return searchWild(temp, str, i + 1,term+c);
+                if(flag==0)
+                    return searchWild(temp, str, i + 1,c+term,flag);
+                else
+                    return searchWild(temp, str, i + 1,term+c,flag);
             }
         }
     }

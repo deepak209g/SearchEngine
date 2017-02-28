@@ -1,20 +1,16 @@
 package driver;
 
 import engine.SearchEngine;
-import engine.Stemmer;
-//import org.tartarus.snowball.ext.PorterStemmer;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Created by turtle on 21/2/17.
  */
 public class CorpusReader {
     String directory;
-    Stemmer stemmer;
-
-
-
 
     public CorpusReader(String directory) {
         this.directory = directory;
@@ -23,11 +19,7 @@ public class CorpusReader {
     public void populateSearchEngine(SearchEngine se){
         populateSearchEngine(se, directory);
     }
-
-
-    // Add the vocabulary to the search engine
     private void populateSearchEngine(SearchEngine se, String file){
-        stemmer = new Stemmer();
         File temp = new File(file);
         if(temp.isFile()){
             // read contents
@@ -37,28 +29,27 @@ public class CorpusReader {
             try {
 
                 String sCurrentLine;
+
                 br = new BufferedReader(new FileReader(file));
+
 
                 while ((sCurrentLine = br.readLine()) != null) {
 
                     // got a line from file
                     // add it to the engine
-                    sCurrentLine = sCurrentLine.replaceAll("[^a-zA-Z0-9]"," ");
-                    String[] split = sCurrentLine.split("\\s+");
+                    //tok = new StringTokenizer(sCurrentLine);
+                    sCurrentLine = sCurrentLine.replaceAll("[^a-zA-Z]"," ");
+                    String[] split = sCurrentLine.split("\\s");
                     for(String token: split){
-                        token = token.toLowerCase().trim();
-                        char arr[] = token.toCharArray();
-                        stemmer.add(arr, arr.length);
-                        stemmer.stem();
-                        token = stemmer.toString();
+                        token = token.toLowerCase();
                         if(token.length()==0)
                             continue;
-                        se.insert(token, file);
-                        se.insertGram(token);  //for inserting bigrams
+//                        se.insert(token, file);  // for inserting whole term
+                        System.out.println(token);
+
+
+
                     }
-
-
-
                 }
 
             } catch (IOException e) {
@@ -77,5 +68,6 @@ public class CorpusReader {
             }
         }
     }
+
 
 }
