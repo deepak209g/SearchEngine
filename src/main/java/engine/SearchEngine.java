@@ -37,13 +37,17 @@ public class SearchEngine {
         }else{
             wildTerms = trie.searchInwild(query);
         }
+        if(wildTerms == null)
+            System.out.println("Object not found");
         for(DocFreqPair itr : wildTerms){
             double score = itr.idf * itr.tf;
             queue.add(new Pair(score, itr.term+" "+itr.docid));
         }
-        while (queue.size() > 0) {
+        int c=0;
+        while (queue.size() > 0 && c<10) {
             Pair<Double,String> p=queue.poll();
             System.out.println("TF IDF Score :" + p.first+", Doc ID: " + p.second);
+            c++;
         }
     }
 
@@ -92,22 +96,24 @@ public class SearchEngine {
             }
 
         }
-        while (queue.size() > 0) {
+        int c=0;
+        while (queue.size() > 0 && c<5) {
             Pair<Double,String> p=queue.poll();
             System.out.println("Jaccard Coefficient :" + p.first+", Did you mean this?: " + p.second);
+            c++;
         }
     }
 
 
     // To confirm
     // End game. Executes the final query of the user
-    public void executeQuery(String query) {
+    public void executeQuery(List<String> tokenList) {
         PriorityQueue<Pair<Double, String>> queue = new PriorityQueue(1000, Collections.reverseOrder());
-//        System.out.println(query);
-        StringTokenizer tokens = new StringTokenizer(query);
+
         Map<String, Double> results = new HashMap();
-        while (tokens.hasMoreTokens()) {
-            String term = tokens.nextToken().toLowerCase().trim();
+        Iterator<String> tokens = tokenList.iterator();
+        while (tokens.hasNext()) {
+            String term = tokens.next().toLowerCase().trim();
             ArrayList<DocFreqPair> res = trie.search(term, 0);
             if (res == null) {
                 System.out.println("token " + term + " Not found");
@@ -133,9 +139,11 @@ public class SearchEngine {
         for(String key : results.keySet()){
             queue.add(new Pair(results.get(key),key));
         }
+        int c=0;
         while (queue.size() > 0) {
             Pair<Double,String> p=queue.poll();
             System.out.println("TF IDF Score :" + p.first+", Doc ID: " + p.second);
+//            c++;
         }
     }
 

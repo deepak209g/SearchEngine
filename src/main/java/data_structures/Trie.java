@@ -151,15 +151,15 @@ public class Trie {
         }
     }
 
-    public ArrayList<DocFreqPair> Intersection(ArrayList<DocFreqPair> postWildTerms,ArrayList<DocFreqPair> preWildTerms){
-        ArrayList<DocFreqPair> wildTerms = new ArrayList<DocFreqPair>();
-        for(DocFreqPair itr:postWildTerms)
-        {
-            if(preWildTerms.contains(itr))
-                wildTerms.add(itr);
-        }
-        return wildTerms;
-    }
+//    public ArrayList<DocFreqPair> Intersection(ArrayList<DocFreqPair> postWildTerms,ArrayList<DocFreqPair> preWildTerms){
+//        ArrayList<DocFreqPair> wildTerms = new ArrayList<DocFreqPair>();
+//        for(DocFreqPair itr:postWildTerms)
+//        {
+//            if(preWildTerms.contains(itr))
+//                wildTerms.add(itr);
+//        }
+//        return wildTerms;
+//    }
     // To confirm
     public ArrayList<DocFreqPair> searchInwild(String str) {
         int len = str.length();
@@ -170,9 +170,8 @@ public class Trie {
         ArrayList<DocFreqPair> preWildTerms = searchPreWild(preTerm,0);
 //        System.out.println(preWildTerms);
 //        System.out.println(postWildTerms);
-//        postWildTerms.retainAll(preWildTerms);
-//        System.out.println(postWildTerms);
-        return Intersection(postWildTerms,preWildTerms);
+        postWildTerms.retainAll(preWildTerms);
+        return postWildTerms;
     }
     public ArrayList<DocFreqPair> searchPreWild(String str,int i) {
         String reverseString = "";
